@@ -1,0 +1,58 @@
+Step-by-Step Data Collection Protocol (Follow This Exactly)
+
+1. Fix Your Camera Setup (Very Important)
+
+    Same height
+    Same tilt
+    Same orientation
+    Same lens settings
+    Include Motion Blur 
+
+Never change this.
+
+
+2. Capture Frames While Walking (Natural Data)
+
+Capture rate:
+
+    1 frame every 1–2 seconds
+    This avoids near-duplicate frames
+
+Why this matters:
+
+    Consecutive frames are highly correlated
+    Too many similar images = overfitting
+
+
+3. Collect Data in ALL Target Environments
+
+Corridor
+
+    Empty corridor
+    Narrow passage
+    Side pillars
+    Partial obstruction
+
+Seminar hall
+
+    Clear aisle
+    Chairs on both sides
+    Chairs partially blocking
+    Cluttered entry
+
+
+4. Labeling Rule (This Is Crucial)
+
+    For each frame, ask:
+
+    “Can a person safely walk straight forward for ~2 steps?”
+
+    YES → CLEAR_PATH
+    NO → OBSTACLE
+
+    This keeps labeling consistent across environments.
+
+
+
+OBSTACLE: 237 + 548
+Clear: 89 + 135 
