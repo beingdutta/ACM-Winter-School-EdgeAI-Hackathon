@@ -6,8 +6,23 @@ import json
 # -----------------------------
 # CONFIG
 # -----------------------------
-UDP_IP = "127.0.0.1"   # Change if receiver is on another machine
-UDP_PORTS = [5005, 5007]
+# If in laptop/android emulator data needs to be received, then 
+# use IP: 127.0.0.1 (this IP is used to receive data on same device
+# which is generating the data)
+
+# For Android emulator we need to do port forwarding using:
+# C:\Users\aritr\AppData\Local\Android\Sdk\platform-tools\adb emu redir add udp:5005:5005
+
+# Otherwise:
+# For the below code to work, the sender, and the receiver 
+# should be on the same LAN. Connect all the devices to the 
+# same LAN, then check IP of the network in android phone, paste here, 
+# check IP of laptop using ipconfig / ifconfig and paste here.
+
+TARGETS = [
+    ("127.0.0.1", 5005),  # Android
+    ("127.0.0.1", 5007),  # Laptop
+]
 SEND_INTERVAL = 0.1    # 10 Hz
 # -----------------------------
 
@@ -33,16 +48,18 @@ while True:
 
     # Change scenario every ~5 seconds
     if now - mode_timer > 5:
-        mode = random.choice(["normal", "obstacle", "fall", "horn"])
+        mode = random.choice(["normal", "obstacle", "fall"])
         mode_timer = now
 
     alert = "NONE"
     tof_mm = random.randint(900, 1500)
     imu = random_imu()
+    cnn_label = "Clear"
 
     if mode == "obstacle":
         tof_mm = random.randint(300, 700)
         alert = "OBSTACLE_AHEAD. STOP!"
+        cnn_label = "Obstacle"
 
     elif mode == "fall":
         imu = {
@@ -55,17 +72,15 @@ while True:
         }
         alert = "FALL_DETECTED. GET UP SLOWLY!"
 
-    elif mode == "horn":
-        alert = "HORN SOUND DETECTED. BE CAREFUL! FLASHING LIGHTS!"
-
     packet = {
         "timestamp": now,
         "imu": imu,
         "tof_mm": tof_mm,
-        "alert": alert
+        "alert": alert,
+        "cnn_label": cnn_label
     }
 
     encoded_packet = json.dumps(packet).encode()
-    for port in UDP_PORTS:
-        sock.sendto(encoded_packet, (UDP_IP, port))
+    for ip, port in TARGETS:
+        sock.sendto(encoded_packet, (ip, port))
     time.sleep(SEND_INTERVAL)

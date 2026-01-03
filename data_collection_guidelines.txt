@@ -54,5 +54,5 @@ Seminar hall
 
 
 
-OBSTACLE: 237 + 548
-Clear: 89 + 135 
+OBSTACLE: 868
+Clear: 425

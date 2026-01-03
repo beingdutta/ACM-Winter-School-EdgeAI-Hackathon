@@ -34,19 +34,28 @@ st.title("🦾 Third Eye – Assistive Navigation Dashboard")
 
 alert_placeholder = st.empty()
 tof_placeholder = st.empty()
+cnn_placeholder = st.empty()
 
-col1, col2 = st.columns(2)
-acc_chart = col1.empty()
-gyro_chart = col2.empty()
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.markdown("<h3 style='text-align: center;'>Accelerometer</h3>", unsafe_allow_html=True)
+    acc_chart = st.empty()
+with col2:
+    st.markdown("<h3 style='text-align: center;'>Gyroscope</h3>", unsafe_allow_html=True)
+    gyro_chart = st.empty()
+with col3:
+    st.markdown("<h3 style='text-align: center;'>Time of Flight</h3>", unsafe_allow_html=True)
+    tof_chart = st.empty()
 
 # ---------- STATE ----------
 @st.cache_resource
 def get_shared_state():
     # This dictionary persists across Streamlit re-runs
     state = {
-        "buffer": {k: [0.0] * MAX_POINTS for k in ["ax", "ay", "az", "gx", "gy", "gz"]},
+        "buffer": {k: [0.0] * MAX_POINTS for k in ["ax", "ay", "az", "gx", "gy", "gz", "tof"]},
         "alert": "NONE",
         "tof": 1500,
+        "cnn_label": "Clear",
         "lock": threading.Lock()
     }
 
@@ -68,9 +77,15 @@ def get_shared_state():
                 with shared_state["lock"]:
                     shared_state["alert"] = pkt["alert"]
                     shared_state["tof"] = pkt["tof_mm"]
+                    shared_state["cnn_label"] = pkt.get("cnn_label", "Clear")
                     imu = pkt["imu"]
-                    for k in shared_state["buffer"]:
+                    
+                    for k in ["ax", "ay", "az", "gx", "gy", "gz"]:
                         shared_state["buffer"][k].append(imu[k])
+                    
+                    shared_state["buffer"]["tof"].append(pkt["tof_mm"])
+
+                    for k in shared_state["buffer"]:
                         if len(shared_state["buffer"][k]) > MAX_POINTS:
                             shared_state["buffer"][k].pop(0)
             except Exception as e:
@@ -88,13 +103,11 @@ last_spoken_label = ""
 last_ui_update = 0
 
 # ---------- ALERT DECISION ----------
-def decide_label(raw_alert, tof_mm):
+def decide_label(raw_alert, tof_mm, cnn_label):
     # Highest priority first
     if "FALL_DETECTED" in raw_alert:
         return "FALL DETECTED - HELP! FLASHING SOS LIGHTS!"
-    if "HORN" in raw_alert:
-        return "HORN DETECTED ! Go slowly"
-    if "OBSTACLE" in raw_alert or tof_mm < 800:
+    if "OBSTACLE" in raw_alert or tof_mm < 800 or cnn_label == "Obstacle":
         return "Obstacle Ahead - STOP! CHANGE DIRECTION!"
     return "Keep Walking Safely"
 
@@ -104,7 +117,7 @@ while True:
 
     # Update label every UI_UPDATE_INTERVAL seconds
     if now - last_ui_update >= UI_UPDATE_INTERVAL:
-        display_label = decide_label(shared_state["alert"], shared_state["tof"])
+        display_label = decide_label(shared_state["alert"], shared_state["tof"], shared_state["cnn_label"])
         last_ui_update = now
 
         # Speak only if label changed
@@ -126,7 +139,12 @@ while True:
     )
 
     tof_placeholder.markdown(
-        f"<h3 style='text-align:center;'>Distance: {shared_state['tof']} mm</h3>",
+        f"<h3 style='text-align:center;'>Distance: {shared_state['tof'] / 1000:.2f} m</h3>",
+        unsafe_allow_html=True
+    )
+
+    cnn_placeholder.markdown(
+        f"<h3 style='text-align:center;'>Visual AI: {shared_state['cnn_label']}</h3>",
         unsafe_allow_html=True
     )
 
@@ -143,8 +161,14 @@ while True:
             "Gy": shared_state["buffer"]["gy"],
             "Gz": shared_state["buffer"]["gz"]
         })
+        
+        tof_df = pd.DataFrame({
+            "ToF (m)": [x / 1000.0 for x in shared_state["buffer"]["tof"]],
+            "Max (4m)": [4.0] * len(shared_state["buffer"]["tof"])
+        })
 
     acc_chart.line_chart(acc_df)
     gyro_chart.line_chart(gyro_df)
+    tof_chart.line_chart(tof_df)
 
     time.sleep(0.1)
