@@ -20,7 +20,7 @@ import json
 # check IP of laptop using ipconfig / ifconfig and paste here.
 
 TARGETS = [
-    ("127.0.0.1", 5005),  # Android
+    ("192.168.43.216", 5005),  # Android
     ("127.0.0.1", 5007),  # Laptop
 ]
 SEND_INTERVAL = 0.1    # 10 Hz
