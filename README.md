@@ -3,6 +3,9 @@
 A fully on-device assistive navigation system that fuses physics-based sensing with edge AI to deliver reliable, real-time guidance for visually impaired users.
 
 ---
+<p align="center">
+  <img src="assets/screenshots/title.png" width="100%" alt="System Architecture">
+</p>
 
 ## 📌 Overview
 
@@ -14,6 +17,17 @@ The system continuously senses the environment, detects obstacles and falls, and
 
 ---
 
+## 🎥 Live Video Demo
+
+<p align="center">
+  <a href="https://youtu.be/Ljr1aza-Wbo">
+    <img src="assets/demo-video/thumbnail.png" width="85%">
+  </a>
+</p>
+
+  ▶️ Click the image to watch the real-time video demo of the wearable assistive system in action. 
+
+---
 ## ✨ Key Features
 
 - Physics-based obstacle detection using Time-of-Flight (ToF) sensing  
@@ -43,6 +57,9 @@ Safety-critical decisions such as obstacle avoidance and fall detection are driv
   - Wi-Fi + BLE  
 
 - Mobile phone / Laptop (receiver UI)
+<p align="center">
+  <img src="assets/screenshots/Hardware Used.png" width="85%" alt="Hardware Used">
+</p>
 
 ---
 
@@ -60,6 +77,9 @@ Mobile / Web UI (audio alerts + graphs)
 
 Every ~50 ms, sensors are sampled.  
 Every ~250–1200 ms, decisions are transmitted wirelessly.
+<p align="center">
+  <img src="assets/screenshots/System Architecture.png" width="85%" alt="System Architecture">
+</p>
 
 ---
 
@@ -97,7 +117,9 @@ Once detected, a fall alert persists for several seconds to ensure reliable noti
 - Configurable IP and port settings  
 
 UI implemented using Flutter (mobile) and Streamlit (web).
-
+<p align="center">
+  <img src="assets/screenshots/UI.png" width="85%" alt="UI">
+</p>
 ---
 
 ## 📊 Edge AI Optimization
@@ -157,10 +179,34 @@ The main challenge was not building individual components, but making them work 
 
 ---
 
+## 📚 Hackathon Resources
+
+- 📑 **Project Presentation (IISc Hackathon)**  
+  https://docs.google.com/presentation/d/13hz6AAkCS6R9HN_AuOMq6TGLBEf-kmgD/edit?usp=sharing&ouid=115210685101328742222&rtpof=true&sd=true
+
+- 📂 **Additional Media & Resources**  
+  https://drive.google.com/drive/u/0/folders/1vJ3rpd_AxeCZqh6uSvXPuzTzQbBVhyR_
+
+---
+
+## 👥 Team Members
+
+<p align="center">
+  <img src="assets/screenshots/hackathon_group.jpg" width="100%" alt="Third Eye Hackathon Team">
+</p>
+
+This project was developed collaboratively during the IISc Hackathon (Winter School on Edge AI). 
+
+By - [Santanu Mondal](https://www.linkedin.com/in/iamsantanu21/), 
+[Aritra Dutta](https://www.linkedin.com/in/aritra-dutta-bb988a190/), 
+[Avishka Jindal](https://www.linkedin.com/in/avishkajindal05/), 
+[Arya Sahu](https://www.linkedin.com/in/arya-sahu-237701242/), 
+[Shyamashri Das](https://www.linkedin.com/in/shyamashri-das-5a29b3188/)
+
+
+---
 ## 📄 License
 
-MIT License
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-Get the content at: https://drive.google.com/drive/u/0/folders/1vJ3rpd_AxeCZqh6uSvXPuzTzQbBVhyR_
 
-Get the presentation of the hackathon at: https://docs.google.com/presentation/d/13hz6AAkCS6R9HN_AuOMq6TGLBEf-kmgD/edit?usp=sharing&ouid=115210685101328742222&rtpof=true&sd=true
